@@ -1,56 +1,198 @@
+
 <template>
+
   <ion-page>
-    <ion-header :translucent="true">
+
+    <!-- Header -->
+    <ion-header>
+
       <ion-toolbar>
-        <ion-title>Blank</ion-title>
+
+        <ion-title>
+          Photo Gallery
+        </ion-title>
+
       </ion-toolbar>
+
     </ion-header>
 
-    <ion-content :fullscreen="true">
-      <ion-header collapse="condense">
-        <ion-toolbar>
-          <ion-title size="large">Blank</ion-title>
-        </ion-toolbar>
-      </ion-header>
 
-      <div id="container">
-        <strong>Ready to create an app?</strong>
-        <p>Start with Ionic <a target="_blank" rel="noopener noreferrer" href="https://ionicframework.com/docs/components">UI Components</a></p>
+    <!-- Content -->
+    <ion-content
+      :fullscreen="true"
+    >
+
+      <!-- Welcome -->
+      <div class="page-header">
+
+        <h1>
+          My Photo Gallery
+        </h1>
+
+        <p>
+          Capture and view your favorite photos.
+        </p>
+
       </div>
+
+
+      <!-- Camera Component -->
+      <CameraComponent
+        @photo-taken="addPhoto"
+      />
+
+
+      <!-- Divider -->
+      <div class="divider"></div>
+
+
+      <!-- Photo Gallery Component -->
+      <PhotoGalleryComponent
+        :photos="photos"
+        @delete-photo="deletePhoto"
+      />
+
     </ion-content>
+
   </ion-page>
+
 </template>
 
+
 <script setup lang="ts">
-import { IonContent, IonHeader, IonPage, IonTitle, IonToolbar } from '@ionic/vue';
+
+import { ref } from 'vue';
+
+import {
+  IonPage,
+  IonHeader,
+  IonToolbar,
+  IonTitle,
+  IonContent
+} from '@ionic/vue';
+
+
+// ========================================
+// COMPONENTS
+// ========================================
+
+import CameraComponent
+  from '../components/CameraComponent.vue';
+
+import PhotoGalleryComponent
+  from '../components/PhotoGalleryComponent.vue';
+
+
+// ========================================
+// PHOTO TYPE
+// ========================================
+
+interface Photo {
+
+  id: string;
+
+  data: string;
+
+}
+
+
+// ========================================
+// PHOTO LIST
+// ========================================
+
+const photos =
+  ref<Photo[]>([]);
+
+
+// ========================================
+// ADD PHOTO
+// ========================================
+
+const addPhoto = (
+  photoData: string
+) => {
+
+  const newPhoto: Photo = {
+
+    id: Date.now().toString(),
+
+    data: photoData
+
+  };
+
+
+  photos.value.unshift(
+    newPhoto
+  );
+
+};
+
+
+// ========================================
+// DELETE PHOTO
+// ========================================
+
+const deletePhoto = (
+  id: string
+) => {
+
+  photos.value =
+    photos.value.filter(
+      photo => photo.id !== id
+    );
+
+};
+
 </script>
 
+
 <style scoped>
-#container {
-  text-align: center;
-  
-  position: absolute;
-  left: 0;
-  right: 0;
-  top: 50%;
-  transform: translateY(-50%);
+
+/* ========================================
+   PAGE HEADER
+======================================== */
+
+.page-header {
+
+  padding: 24px 20px 10px;
+
 }
 
-#container strong {
-  font-size: 20px;
-  line-height: 26px;
-}
+.page-header h1 {
 
-#container p {
-  font-size: 16px;
-  line-height: 22px;
-  
-  color: #8c8c8c;
-  
   margin: 0;
+
+  font-size: 28px;
+
+  font-weight: 700;
+
 }
 
-#container a {
-  text-decoration: none;
+.page-header p {
+
+  margin-top: 8px;
+
+  color:
+    var(--ion-color-medium);
+
 }
+
+
+/* ========================================
+   DIVIDER
+======================================== */
+
+.divider {
+
+  height: 1px;
+
+  background:
+    var(--ion-color-light);
+
+  margin:
+    10px 20px;
+
+}
+
 </style>
+
